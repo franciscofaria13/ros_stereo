@@ -12,6 +12,7 @@ from coordinate_transformation import transform_to_world
 from visualization import publish_pointcloud
 from rectification import rectify_images 
 import numpy as np
+import threading
 
 class StereoProcessor:
     def __init__(self):
@@ -187,8 +188,19 @@ class StereoProcessor:
 
 
 if __name__ == "__main__":
-    #rospy.init_node('stereo_processor', anonymous=False)
-    processor = StereoProcessor()
-    rospy.spin(ros.ROSInterruptException, rospy.MultiThreadedSpinner(4))
+    try:
+        processor = StereoProcessor()
+        rospy.loginfo("Stereo processor node started.")
+
+        # Create and start a thread for rospy.spin()
+        spin_thread = threading.Thread(target=rospy.spin)
+        spin_thread.start()
+
+        rospy.loginfo("Spinning in a separate thread.")
+
+    except rospy.ROSInterruptException:
+        rospy.loginfo("Stereo processor node terminated.")
+
+
 
 
