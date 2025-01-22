@@ -1,0 +1,30 @@
+<launch>
+    <!-- Stereo processing node -->
+    <node pkg="stereo_pipeline" type="stereo_processor.py" name="stereo_processor" output="screen" />
+
+    <!-- Play rosbag file -->
+    <node pkg="rosbag" type="play" name="rosbag_play" output="screen" args="-s 200 /home/ffaria/Barcelos_Log_Linhas/2024-11-28-12-12-48.bag"/>
+
+    <node launch-prefix="nice" pkg="rviz" type="rviz" name="rviz" args="-d $(find stereo_pipeline)/rviz_cfg/conf_img_debug.rviz" />
+
+    <!-- rqt_image_view for debugging detected lines -->
+    <node pkg="rqt_image_view" type="rqt_image_view" name="rqt_detected_lines">
+        <remap from="image" to="/debug/detected_lines"/>
+    </node>
+
+    <!-- rqt_image_view for debugging detected lines -->
+    <node pkg="rqt_image_view" type="rqt_image_view" name="rqt_disparity">
+        <remap from="image" to="/debug/disparity"/>
+    </node>
+
+    <!-- Publish tf transform-->
+    <node pkg="stereo_pipeline" type="pose_to_tf.py" name="tf_broadcaster" output="screen">
+        <param name="parent_frame" value="map"/>
+        <param name="child_frame" value="camera_link"/>
+    </node>
+
+        <!-- Temp tf-->
+    <node pkg="tf" type="static_transform_publisher" name="static_tf"
+          args="0 0 0 0 0 0 1 camera_link base_link 10" />
+</launch>
+

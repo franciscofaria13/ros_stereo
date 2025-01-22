@@ -1,0 +1,14 @@
+<launch>
+    
+    <arg name="rviz" default="false" />
+    
+    <node pkg="stereo_pipeline" type="stereo_processor.py" name="stereo_processor" output="screen" />
+
+    <!-- Play rosbag file -->
+    <node pkg="rosbag" type="play" name="rosbag_play" output="screen" args="/home/ffaria/Barcelos_Log_Linhas/2024-11-28-12-12-48.bag"/>
+    
+  <group if="$(arg rviz)">
+    <node launch-prefix="nice" pkg="rviz" type="rviz" name="rviz" args="-d $(find stereo_pipeline)/rviz_cfg/config_better.rviz" />
+  </group>
+
+</launch>
